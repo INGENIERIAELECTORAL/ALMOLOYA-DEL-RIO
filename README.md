@@ -1,12 +1,14 @@
 # Sistema Electoral · Almoloya del Río
 
+Versión 1.0.1: compilación de Vercel independiente del generador de datos. El comando de producción es `npm run typecheck && vite build`.
+
 Versión municipal basada en la organización y las vistas del repositorio electoral de Baja California: Resumen, Secciones, Colonias, Mapa, Metas, Resultados y Documentos. Conserva la navegación entre secciones, colonias, mapa y planos. La interfaz institucional es verde; las tablas mantienen los colores de los partidos.
 
 Aplicación pública de consulta con React, TypeScript, Vite y Leaflet, preparada para GitHub y Vercel. Los datos viven en archivos del proyecto. No requiere cuentas, contraseñas, variables de entorno ni servicios de base de datos.
 
 ## Ejecutar y compilar
 
-Requiere Node.js 22 LTS y npm.
+Requiere Node.js 24.x y npm.
 
 ```bash
 npm ci
@@ -16,13 +18,13 @@ npm run build
 npm run preview
 ```
 
-`npm run build` valida TypeScript y genera `dist/`. La entrega incluye una compilación de producción y el código fuente. `npm run validate` ejecuta las pruebas y la compilación. `node scripts/build-data.mjs` reconstruye los datos de la aplicación a partir de las lecturas de origen conservadas en `sources/`.
+`npm run build` valida TypeScript y genera `dist/` usando los datos ya incluidos en `src/data/` y `public/data/`. La compilación no ejecuta `scripts/build-data.mjs` ni necesita la carpeta `sources/`. La entrega incluye una compilación de producción y el código fuente. `npm run validate` ejecuta las pruebas y la compilación. `node scripts/build-data.mjs` reconstruye los datos de la aplicación a partir de las lecturas de origen conservadas en `sources/`.
 
 ## GitHub y Vercel
 
-1. Descomprimir y subir **el contenido de la carpeta `almoloya-del-rio`** a un repositorio nuevo. Incluir `package-lock.json`, `src/`, `public/`, `sources/`, `tests/`, `scripts/` y las configuraciones. Excluir `node_modules/`.
-2. Importar ese repositorio en Vercel. Si se sube una carpeta contenedora adicional, seleccionar `almoloya-del-rio` como Root Directory.
-3. Framework: Vite. Install Command: `npm ci`. Build Command: `npm run build`. Output Directory: `dist`. Node.js: 22.x.
+1. Descomprimir el ZIP y subir **todos los archivos que contiene a la raíz del repositorio**: `package.json` debe quedar junto a `vercel.json`, `src/` y `public/`. El ZIP corregido no añade una carpeta contenedora. Incluir `package-lock.json`, `src/`, `public/`, `sources/`, `tests/`, `scripts/` y las configuraciones. Excluir `node_modules/`.
+2. Importar ese repositorio en Vercel con Root Directory en la raíz (`./`), donde se ve `package.json`. Si el repositorio conserva una carpeta contenedora anterior, elegir expresamente esa carpeta como Root Directory.
+3. Framework: Vite. Install Command: `npm ci`. Build Command: `npm run build`. Output Directory: `dist`. Node.js: 24.x.
 4. `vercel.json` incluye la redirección de rutas de la aplicación. Abrir directamente `/app/ambito/15006/mapa?seccion=151` debe cargar la consulta de la sección.
 5. El mapa utiliza teselas de Stadia Maps con autenticación por dominio. En la cuenta de Stadia utilizada para el proyecto, autorizar el dominio final de Vercel o el dominio propio. No incluir claves privadas en el código. Los polígonos locales, resultados, colonias y selección siguen funcionando si el fondo no está disponible. El botón “Fondo Stadia” permite ocultarlo y volver a solicitarlo.
 

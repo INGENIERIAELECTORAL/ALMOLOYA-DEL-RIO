@@ -1,98 +1,60 @@
-# Sistema Electoral · Almoloya del Río
+# Almoloya del Río · proyecto completo
 
-Versión 1.0.1: compilación de Vercel independiente del generador de datos. El comando de producción es `npm run typecheck && vite build`.
+Este paquete contiene `src/`, `public/` y los archivos de la raíz necesarios para instalar y compilar la aplicación React con Vite. El código y los datos de las dos carpetas originales se conservan sin modificaciones.
 
-Versión municipal basada en la organización y las vistas del repositorio electoral de Baja California: Resumen, Secciones, Colonias, Mapa, Metas, Resultados y Documentos. Conserva la navegación entre secciones, colonias, mapa y planos. La interfaz institucional es verde; las tablas mantienen los colores de los partidos.
+## Subir a GitHub desde Windows
 
-Aplicación pública de consulta con React, TypeScript, Vite y Leaflet, preparada para GitHub y Vercel. Los datos viven en archivos del proyecto. No requiere cuentas, contraseñas, variables de entorno ni servicios de base de datos.
+1. Extraer todo el ZIP a una carpeta nueva.
+2. Abrir esa carpeta en el Explorador de Windows. Junto a `src` y `public` deben verse `package.json`, `package-lock.json`, `index.html`, `vite.config.ts`, `tsconfig.json` y `vercel.json`.
+3. En GitHub, entrar en la raíz del repositorio y elegir **Add file → Upload files**. Si se abrió la ventana **Abrir**, cancelarla para volver al área de carga.
+4. Desde el Explorador de Windows, arrastrar al área de GitHub los archivos de la raíz y la carpeta `src`. Confirmar con **Commit changes**.
+5. Hacer una segunda carga arrastrando la carpeta `public` completa y confirmar otro commit. Se separan las cargas para respetar el máximo de 100 archivos simultáneos de GitHub.
 
-## Ejecutar y compilar
+Hay que arrastrar el contenido extraído, no el ZIP ni la carpeta exterior que lo contiene. Al terminar, `package.json`, `src` y `public` deben estar al mismo nivel en la raíz del repositorio.
 
-Requiere Node.js 24.x y npm.
+Si el repositorio ya contiene `src` y `public` de este mismo paquete, basta con subir los nuevos archivos de raíz. No es necesario borrar carpetas existentes.
+
+## Vercel
+
+| Ajuste | Valor |
+|---|---|
+| Framework Preset | Vite |
+| Root Directory | Raíz del repositorio, `./` |
+| Install Command | `npm ci` |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Node.js | 22.x o 24.x |
+
+`vercel.json` contiene los comandos, la salida y la reescritura de las rutas `/app/…` a `index.html` para permitir recargar directamente las vistas de la aplicación.
+
+Si se está actualizando un proyecto de Vercel existente, revisar que no tenga una carpeta raíz distinta configurada ni un comando de compilación anterior guardado en sus ajustes.
+
+La compilación comprueba TypeScript antes de generar la web. El mapa usa Stadia para el fondo y los GeoJSON locales para las capas municipales. La configuración de dominio de Stadia es independiente de la compilación; el proyecto no incorpora credenciales.
+
+## Uso local
+
+Con Node.js 22.12 o superior, hasta la rama 24:
 
 ```bash
 npm ci
 npm run dev
-npm test
+```
+
+Para generar y revisar la versión de producción:
+
+```bash
 npm run build
 npm run preview
 ```
 
-`npm run build` valida TypeScript y genera `dist/` usando los datos ya incluidos en `src/data/` y `public/data/`. La compilación no ejecuta `scripts/build-data.mjs` ni necesita la carpeta `sources/`. La entrega incluye una compilación de producción y el código fuente. `npm run validate` ejecuta las pruebas y la compilación. `node scripts/build-data.mjs` reconstruye los datos de la aplicación a partir de las lecturas de origen conservadas en `sources/`.
+El archivo `package-lock.json` fija las versiones que se instalaron y verificaron. No subir `node_modules` ni `dist` al repositorio: Vercel los genera durante la instalación y compilación.
 
-## GitHub y Vercel
+## Verificación de esta entrega
 
-1. Descomprimir el ZIP y subir **todos los archivos que contiene a la raíz del repositorio**: `package.json` debe quedar junto a `vercel.json`, `src/` y `public/`. El ZIP corregido no añade una carpeta contenedora. Incluir `package-lock.json`, `src/`, `public/`, `sources/`, `tests/`, `scripts/` y las configuraciones. Excluir `node_modules/`.
-2. Importar ese repositorio en Vercel con Root Directory en la raíz (`./`), donde se ve `package.json`. Si el repositorio conserva una carpeta contenedora anterior, elegir expresamente esa carpeta como Root Directory.
-3. Framework: Vite. Install Command: `npm ci`. Build Command: `npm run build`. Output Directory: `dist`. Node.js: 24.x.
-4. `vercel.json` incluye la redirección de rutas de la aplicación. Abrir directamente `/app/ambito/15006/mapa?seccion=151` debe cargar la consulta de la sección.
-5. El mapa utiliza teselas de Stadia Maps con autenticación por dominio. En la cuenta de Stadia utilizada para el proyecto, autorizar el dominio final de Vercel o el dominio propio. No incluir claves privadas en el código. Los polígonos locales, resultados, colonias y selección siguen funcionando si el fondo no está disponible. El botón “Fondo Stadia” permite ocultarlo y volver a solicitarlo.
+Se comprobó una instalación limpia con `npm ci`, el análisis completo de tipos con `tsc --noEmit` y la compilación de producción con Vite. Se verificó que los 102 archivos originales de `src/` y `public/` coinciden byte por byte con el ZIP anterior y que los archivos públicos se copian a `dist/`.
 
-Esta entrega no crea por sí sola un repositorio remoto ni un despliegue en una cuenta de Vercel.
+Referencias:
 
-## Datos incluidos
-
-Municipio 006 del Estado de México (clave compuesta 15006), secciones **151–155**, DF actual **23**, DL actual **29**. Los registros de 2021 conservan su DL histórico **7**. No se certifican límites históricos equivalentes ni se interpolan resultados.
-
-| Elección | Válidos geográficos | No registrados | Nulos | Total geográfico |
-| --- | ---: | ---: | ---: | ---: |
-| Ayuntamiento 2021 | 5,152 | 769 | 174 | 6,095 |
-| Diputaciones locales 2021 | 5,820 | 25 | 245 | 6,090 |
-| Gubernatura 2023 | 5,977 | 0 | 165 | 6,142 |
-| Ayuntamiento 2024 | 6,810 | 7 | 256 | 7,073 |
-| Diputaciones locales 2024 | 6,744 | 27 | 292 | 7,063 |
-| Presidencia 2024 | 6,720 | 3 | 146 | 6,869 |
-
-Diputaciones locales 2024 también contiene una fila con sección **0**, dos votos válidos y dos votos totales: el archivo completo suma **7,065**, mientras que las cinco secciones cartografiables suman **7,063**. La fila no se reparte entre secciones. En Resultados se puede incluir explícitamente en el total del archivo y en la exportación CSV.
-
-Padrón: **10,236**. LN actual aportada: **10,139**. No se indicó fecha de corte en el archivo; la interfaz lo informa. La meta 5 % suma **509**: redondear por sección y después sumar. La participación usa la LN histórica de cada elección, nunca la LN actual.
-
-Tres colonias únicas: Almoloya del Río, Loma Alta y Tecalco. El Excel contiene siete relaciones colonia–sección y la cartografía ocho. Tecalco aparece en la sección 152 en el Excel y cruza 151 y 152 en la geometría. Ambas relaciones se consultan separadas y se conservan. La LN mostrada junto a una colonia corresponde a la sección completa: no es una estimación de la colonia. No se asignan votos por superficie ni se suman secciones repetidas por colonia.
-
-Nueve enlaces a planos por sección: 151 (2), 152 (1), 153 (3), 154 (1), 155 (2). Los enlaces conservan el acceso que tengan configurado en Drive.
-
-## Cálculos y vistas de voto
-
-`src/electoral.ts` es el motor único para tablas, selección del mapa y referencias históricas. Cada elección tiene su propia configuración de candidaturas y columnas: una columna con el mismo nombre puede tener distinto significado según la elección.
-
-- Resultado final: suma disjunta de columnas de una misma candidatura.
-- Columnas de origen: votos individuales, marcas combinadas y candidatura común por separado. Es una vista alternativa, no se suma a la anterior.
-- Candidaturas comunes: no se reparten entre partidos si la fuente no proporciona ese desglose. En Gubernatura 2023, los 3,503 votos de `PVEM_PT_MORENA` permanecen como un dato común. En Diputaciones locales 2024, la columna común es `CC_PVEM_PT_MORENA`.
-- Votación total = válidos + no registrados + nulos. Las columnas de totales nunca se vuelven a sumar como partidos.
-- Porcentaje de actor = votos del actor / válidos. Participación = total / LN de esa elección. Denominador cero: dato no disponible.
-- Referencia competir = segundo lugar histórico; referencia ganar = primer lugar histórico + 1. Son referencias descriptivas, no pronósticos.
-
-No se inventan nombres personales de candidaturas ni se realiza redistribución jurídica entre partidos. Las columnas sin votos que no integran candidaturas activas se conservan en el desglose completo y en el CSV.
-
-## Cartografía y recuperación de errores
-
-Se conservan los 55 archivos de capas suministrados: 23 contienen datos (421 elementos). Las capas vacías no aparecen en el selector. Los límites distritales están recortados al municipio. Los atributos originales están disponibles al activar las capas de detalle y pulsar sus elementos; los límites municipales/distritales no interceptan la selección de secciones.
-
-Las coordenadas son longitud/latitud WGS84 (EPSG:4326). La selección usa `properties.seccion`, y los detalles resuelven `properties.id` desde el catálogo; `feature.id` es solamente un índice de dibujo. Se valida el universo exacto de cinco secciones antes de dibujar. Cada instancia del mapa cancela solicitudes pendientes y libera eventos y observadores al salir de la vista. Cambiar elección, actor o indicador actualiza el detalle sin sustituir la geometría.
-
-El motor municipal sustituye el controlador DOM heredado del original. Las elecciones se cargan como datos estáticos versionados: los cambios entre elecciones no dependen de una petición remota ni pueden ser sobrescritos por respuestas tardías. Un fallo de capas adicionales o teselas no bloquea la geometría seccional; un fallo de la geometría muestra un estado de error con reintento.
-
-## Pruebas de navegador
-
-La suite de regresión `e2e/` cubre las seis elecciones, sección cero, candidaturas comunes, colonias, fallos de teselas y geometría, selección, montajes repetidos y pantalla pequeña. Para ejecutarla en un equipo con Chromium disponible:
-
-```bash
-npx playwright install chromium
-npm run test:e2e
-```
-
-El resultado de las verificaciones efectivamente ejecutadas se detalla en `docs/VALIDACION.md`.
-
-## Estructura
-
-- `src/app`, `src/components`, `src/views`: navegación y vistas adaptadas del modelo original.
-- `src/data`: catálogo municipal y seis elecciones generadas.
-- `src/electoral.ts`: cálculos y conciliaciones.
-- `src/map`: Leaflet, validación geográfica y gestión de recursos.
-- `public/data/map`: cartografía municipal original.
-- `public/data/derived`: índice de relaciones geográficas de colonias.
-- `sources`: nueve archivos de origen, lecturas y verificaciones previas; no se copian a `dist/`.
-- `tests`: pruebas de votos, metas, correspondencias territoriales y documentos.
-- `docs/VALIDACION.md`: alcance y resultados de verificación de la entrega.
-
-Los archivos originales no se sobrescribieron. La actualización de datos se realiza modificando las fuentes y su configuración explícita, regenerando y ejecutando las pruebas antes de compilar.
+- https://vite.dev/guide/
+- https://vercel.com/docs/frameworks/frontend/vite
+- https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository

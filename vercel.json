@@ -1,30 +1,10 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
   "rewrites": [
-    {
-      "source": "/((?!data/|assets/|favicon).*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.stadiamaps.com; connect-src 'self' https://tiles.stadiamaps.com; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
-        }
-      ]
-    }
+    { "source": "/app/:path*", "destination": "/index.html" }
   ]
 }
